@@ -1,13 +1,13 @@
 var testApp = angular.module("testApp", []);
 
 testApp.controller("WorkersListCtrl", function($scope, $http) {
-	$http.get("/get_students").success(function(response){
+	$http.get("/workers").success(function(response) {
 		$scope.workers = response;
 	})
 });
 
 testApp.controller("PresencesListCtrl", function($scope, $http) {
-	$http.get("/get_presences").success(function(response){
+	$http.get("/presences").success(function(response){
 		$scope.presences = response;
 	})
 });

@@ -4,11 +4,12 @@ var express = require('express'),
   logger = require('morgan'),
   cookieParser = require('cookie-parser'),
   bodyParser = require('body-parser'),
-
-  routes = require('./routes/index'),
-  users = require('./routes/users'),
-
+  presence = require('./public/javascripts/presence')
+  workers = require('./routes/workers'),
+  presences = require('./routes/presences'),
   app = express();
+
+presence.check();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -24,8 +25,9 @@ app.use(bodyParser.urlencoded({
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', routes);
-app.use('/users', users);
+app.use('/', workers);
+app.use('/presences', presences);
+app.use('/worker/:worker_id/presences', presences)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
