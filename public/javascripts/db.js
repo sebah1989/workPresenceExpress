@@ -47,6 +47,30 @@
         });
     };
 
+    exports.goHomeHour = function(worker_id) {
+        return new Promise(function(fullfill, reject) {
+            connection.all("SELECT time(become_present, '+8 hours') as go_home_hour FROM presence WHERE workday = date('now') AND worker_id = ?", [worker_id], function(err, rows) {
+                if (err) {
+                    reject(err);
+                } else {
+                    fullfill(rows);
+                }
+            });
+        });
+    };
+
+    exports.getWorkerBecomePresent = function(worker_id) {
+        return new Promise(function(fullfill, reject) {
+            connection.get("SELECT become_present FROM presence WHERE workday = date('now') AND worker_id = ?", [worker_id], function(err, rows) {
+                if (err) {
+                    reject(err);
+                } else {
+                    fullfill(rows);
+                }
+            });
+        });
+    };
+
     exports.closeConnection = function(connection) {
         if (connection.open) {
             connection.close(function(e) {

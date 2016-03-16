@@ -7,9 +7,12 @@ testApp.controller("WorkersListCtrl", function($scope, $http) {
 });
 
 testApp.controller("PresencesListCtrl", function($scope, $http) {
-	$http.get("/presences").success(function(response){
+	$http.get("/presences/all").success(function(response){
 		$scope.presences = response;
-	})
+	});
+	$scope.test = function() {
+		$scope.presences = [];
+	}
 });
 
 // var phonecatApp = angular.module('phonecatApp', []);
