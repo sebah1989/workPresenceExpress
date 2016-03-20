@@ -13,6 +13,7 @@
             }
         },
         cheerio = require('cheerio'),
+        iso88592 = require('iso-8859-2'),
         db = require('./db'),
         db_connection = db.makeConnection(),
         collectWorkersInWorkStatus = function(html) {
@@ -132,7 +133,8 @@
                     body.push(chunk);
                 });
                 res.on('end', function() {
-                    body = Buffer.concat(body).toString();
+                    body = Buffer.concat(body);
+                    body = iso88592.decode(body.toString('binary'));
                     if (Object.keys(worker.presence).length === 0) {
                         worker.presence = collectWorkersInWorkStatus(body);
                         db_connection.all("SELECT name, surname FROM workers", function(err, rows) {

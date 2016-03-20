@@ -12,6 +12,9 @@
     "express": "~4.13.1",
     "jade": "~1.11.0",
     "morgan": "~1.6.1",
-    "serve-favicon": "~2.3.0"
+    "serve-favicon": "~2.3.0",
+    "iso-8859-2": "~0.1.2",
+    "sqlite3": "~3.1.1",
+    "cheerio": "~0.20.0"
   }
 }
