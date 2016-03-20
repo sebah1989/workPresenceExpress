@@ -14,6 +14,7 @@
         },
         cheerio = require('cheerio'),
         iso88592 = require('iso-8859-2'),
+        time_m = require('./time_methods'),
         db = require('./db'),
         db_connection = db.makeConnection(),
         collectWorkersInWorkStatus = function(html) {
@@ -39,13 +40,6 @@
             });
             $ = rows = cells = null;
             return presences;
-        },
-        formatDate = function(date_object) {
-            var day = date_object.getDate(),
-                month = date_object.getMonth() + 1;
-            day = day < 10 ? "0" + day : day;
-            month = month < 10 ? "0" + month : month;
-            return date_object.getFullYear() + "-" + month + "-" + day;
         },
         createMissingWorkersInDb = function(current_db_state, current_web_page_state) {
             var i, length = current_db_state.length,
@@ -102,7 +96,7 @@
         },
         updateWorkersPresencesInDb = function(workers) {
             var key, worker,
-                current_date = formatDate(new Date());
+                current_date = time_m.formatDate(new Date());
             for (key in workers) {
                 if (workers.hasOwnProperty(key)) {
                     worker = workers[key];
