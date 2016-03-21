@@ -13,41 +13,72 @@
         formatDateNumber = function(number) {
             return number < 10 ? "0" + number : number;
         },
-        getWorkedHours = function(date) {
-            var curent_date = new Date(),
-            weeks,
-            days = curent_date.getDate();
+        getWorkedHoursFromModulo = function(first_day, modulo_days) {
+            var sum = first_day + modulo_days;
+            if (first_day !== 6 && first_day !== 0) {
+                if (sum < 7) {
+                    return modulo_days * 8;
+                }
+                if (sum === 7) {
+                    return (modulo_days - 1) * 8;
+                }
+                return (modulo_days - 2) * 8;
+            }
+            if (first_day === 0) {
+                modulo_days -= 1;
+            } else if (first_day === 6) {
+                modulo_days -= 2;
+            }
+            modulo_days = modulo_days < 0 ? 0 : modulo_days;
+            return modulo_days * 8;
+        },
+        getHoursTimeShouldBeWorked = function() {
+            var current_date = new Date(),
+                modulo_days,
+                modulo_hours,
+                weeks,
+                first_day,
+                days = current_date.getDate();
             weeks = Math.floor(days / 7);
-            console.log(weeks)
+            modulo_days = days % 7;
+            first_day = new Date(current_date.getFullYear(), current_date.getMonth(), 1).getDay();
+            modulo_hours = getWorkedHoursFromModulo(first_day, modulo_days);
+            return (weeks * 40 + modulo_hours) * 3600;
         },
         sumUpTimeSpentInWorkInCurrentMonth = function(presences) {
             var i, length = presences.length,
                 become_present,
                 become_absent,
                 sum = 0;
-            getWorkedHours();
             for (i = 0; i < length; i += 1) {
                 become_present = presences[i].become_present || "00:00:00";
                 become_absent = presences[i].become_absent || "23:59:59";
                 sum += parseDateToSeconds(become_absent) - parseDateToSeconds(become_present);
             }
             return sum;
+        },
+        formatTime = function(seconds) {
+            var sign = "",
+                hours,
+                minutes;
+            if (seconds < 0) {
+                seconds = Math.abs(seconds);
+                sign = "-";
+            }
+            hours = formatDateNumber(Math.floor(seconds / 3600));
+            minutes = formatDateNumber(Math.floor((seconds % 3600) / 60));
+            seconds = formatDateNumber(seconds % 60);
+            return sign + hours + ":" + minutes + ":" + seconds;
         };
 
     exports.calculateTodayWorkTimeLeft = function(presence) {
         var current_time = new Date().toTimeString().split(" ")[0],
             presence_time,
-            diff,
-            hours,
-            minutes,
-            seconds;
+            diff;
         current_time = parseDateToSeconds(current_time);
         presence_time = parseDateToSeconds(presence.become_present);
         diff = 8 * 3600 - (current_time - presence_time);
-        hours = formatDateNumber(Math.floor(diff / 3600));
-        minutes = formatDateNumber(Math.floor((diff % 3600) / 60));
-        seconds = formatDateNumber(diff % 60);
-        return hours + ":" + minutes + ":" + seconds;
+        return formatTime(diff);
     };
     exports.formatDate = function(date_object) {
         var day = date_object.getDate(),
@@ -64,6 +95,12 @@
 
 
     exports.calcuteMonthTimeLeft = function(presences) {
-        sumUpTimeSpentInWorkInCurrentMonth(presences);
+        var should_be_worked = getHoursTimeShouldBeWorked(),
+            actualy_worked = sumUpTimeSpentInWorkInCurrentMonth(presences);
+        return {
+            should_be_worked: formatTime(should_be_worked),
+            actualy_worked: formatTime(actualy_worked),
+            missing_time_in_work: formatTime(should_be_worked - actualy_worked)
+        };
     };
 }());
