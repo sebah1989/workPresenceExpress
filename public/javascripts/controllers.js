@@ -1,29 +1,49 @@
-var testApp = angular.module("testApp", []);
+/*globals angular */
+/*jslint unparam: true, node: true */
+(function() {
+    "use strict";
+    var testApp = angular.module("presenceApp", []),
+        getTimeLeft = function($http, ctrl_obj, worker_id) {
+            $http.get("/worker/" + worker_id + "/presences/work_time_left").success(function(response) {
+                ctrl_obj.work_time_left = response.time_in_work_left;
+            });
+        };
 
-testApp.controller("WorkersListCtrl", function($scope, $http) {
-	$http.get("/workers").success(function(response) {
-		$scope.workers = response;
-	})
-});
+    testApp.controller("WorkerPresenceListCtrl", function($scope, $http, $interval) {
+        var workerc = this;
+        workerc.presences = [];
+        workerc.current_selected = 0;
+        workerc.tab = 1;
+        workerc.interval = null;
 
-testApp.controller("PresencesListCtrl", function($scope, $http) {
-	$http.get("/presences/all").success(function(response){
-		$scope.presences = response;
-	});
-	$scope.test = function() {
-		$scope.presences = [];
-	}
-});
+        $http.get("/workers").success(function(response) {
+            workerc.workers = response;
+        });
 
-// var phonecatApp = angular.module('phonecatApp', []);
+        workerc.get = function(worker_id) {
+            $interval.cancel(workerc.interval);
+            workerc.current_selected = worker_id;
+            $http.get("/worker/" + worker_id + "/presences").success(function(response) {
+                workerc.presences = response;
+            });
 
-// phonecatApp.controller('PhoneListCtrl', function ($scope) {
-//   $scope.phones = [
-//     {'name': 'Nexus S',
-//      'snippet': 'Fast just got faster with Nexus S.'},
-//     {'name': 'Motorola XOOM™ with Wi-Fi',
-//      'snippet': 'The Next, Next Generation tablet.'},
-//     {'name': 'MOTOROLA XOOM™',
-//      'snippet': 'The Next, Next Generation tablet.'}
-//   ];
-// });
+            $http.get("/worker/" + worker_id + "/presences/became_present").success(function(response) {
+                workerc.became_present = response.become_present;
+            });
+
+            $http.get("/worker/" + worker_id + "/presences/go_home_hour").success(function(response) {
+                workerc.go_home_hour = response.go_home_hour;
+            });
+
+            $http.get("/worker/" + worker_id + "/presences/month_work_time_left").success(function(response) {
+                workerc.month_work_time_left = response;
+            });
+
+            getTimeLeft($http, workerc, worker_id);
+
+            workerc.interval = $interval(function() {
+                getTimeLeft($http, workerc, worker_id);
+            }, 1000);
+        };
+    });
+}());

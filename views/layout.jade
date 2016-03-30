@@ -1,5 +1,5 @@
 doctype html
-html(ng-app="testApp")
+html(ng-app="presenceApp")
   head
     meta(charset="utf-8")
     meta(http-equiv="X-UA-Compatible" content="IE=edge")
@@ -7,7 +7,7 @@ html(ng-app="testApp")
     link(rel="stylesheet" href="/stylesheets/bootstrap.css")
     link(rel="stylesheet" href="/stylesheets/main.css")
     title Work presence
-  body
+  body(ng-controller="WorkerPresenceListCtrl as ctrl")
     nav(class="navbar navbar-fixed-top navbar-inverse")
       .container
         .navbar-header
@@ -19,8 +19,13 @@ html(ng-app="testApp")
           a(class="navbar-brand" href="#") Work presence
         div(id="navbar" class="collapse navbar-collapse")
           ul(class="nav navbar-nav")
-            li(class="active")
-              a(href="#") Main
+            li
+              a(href="#" ng-if="ctrl.became_present") Became present today: {{ctrl.became_present}}
+            li
+              a(href="#" ng-if="ctrl.go_home_hour") Go home hour: {{ctrl.go_home_hour}}
+            li
+              a(href="#" ng-if="ctrl.work_time_left") Time in work left: {{ ctrl.work_time_left }}
+
     .container                
       block content
       script(src="/javascripts/jquery-2.2.0.min.js")

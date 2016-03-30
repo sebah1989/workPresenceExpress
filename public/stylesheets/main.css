@@ -57,3 +57,14 @@ footer {
     width: 50%; /* 6 columns */
   }
 }
+
+.tab {
+  margin-top: 40px;
+}
+
+.tab-nav {
+  margin-left: 30%;
+}
+.tab-nav a:hover {
+  cursor: pointer;
+};

@@ -14,5 +14,15 @@ CREATE TABLE 'presence' (
 	FOREIGN KEY('worker_id') REFERENCES 'people'('id')
 );
 
+
+CREATE TRIGGER update_become_present_after_insert AFTER INSERT ON presence
+BEGIN
+	UPDATE presence SET become_present = time(NEW.become_present, '+1 hours') WHERE id = NEW.id;
+END;
+
+CREATE TRIGGER update_become_absent_after_update AFTER UPDATE ON presence
+BEGIN
+	UPDATE presence SET become_absent = time(NEW.become_absent, '+1 hours') WHERE id = NEW.id;
+END;
 -- insert into workers(name, surname) values ('jacek', 'gacek');
 -- insert into presence(worker_id) values (1);

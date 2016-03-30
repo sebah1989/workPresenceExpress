@@ -3,26 +3,40 @@ extends layout
 block content
   div(class="row row-offcanvas row-offcanvas-right")
     div(class="col-xs-12 col-sm-9")
-      table(ng-controller="PresencesListCtrl" class="table")
-        caption Temporary solution
-        thead
-          tr
-            th Id
-            th Become present
-            th Become absent
-            th workday
-            th worker id
-        tbody
-          tr(ng-repeat="presence in presences")
-            td {{presence.id}}
-            td {{presence.become_present}}
-            td {{presence.become_absent}}
-            td {{presence.workday}}
-            td {{presence.worker_id}}
+      section(ng-show='ctrl.presences.length > 0')
+        ul(class="nav nav-pills center-block tab-nav")
+          li(ng-class="{active:ctrl.tab === 1}")
+            a(ng-click="ctrl.tab = 1") Presences
+          li(ng-class="{active:ctrl.tab === 2}")
+            a(ng-click="ctrl.tab = 2") Presences details
+        div(ng-if="ctrl.tab === 1" class="tab")
+          table(class="table")
+            thead
+              tr
+                th Become present
+                th Become absent
+                th workday
+            tbody
+              tr(ng-repeat="presence in ctrl.presences | orderBy:'-workday'")
+                td {{presence.become_present}}
+                td {{presence.become_absent}}
+                td {{presence.workday}}
+        div(ng-if="ctrl.tab === 2" class="tab")
+          table(class="table")
+            tr
+              td Hours which should be worked till now:
+              td {{ ctrl.month_work_time_left.should_be_worked }}
+            tr
+              td Hours worked in this month:
+              td {{ ctrl.month_work_time_left.actualy_worked }}
+            tr
+              td Missing hours worked in this month till now:
+              td {{ ctrl.month_work_time_left.missing_time_in_work }}
+      h2(ng-if="ctrl.presences.length === 0") Click worker on the right to show his presences
     div(class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar")
-      div(class="list-group" ng-controller="WorkersListCtrl")
-        a(ng-if="$first" ng-repeat="worker in workers" ng-click="test()" href="#" class="list-group-item active") {{worker.id}} {{worker.name}} {{worker.surname}}
-        a(ng-if="!$first" ng-repeat="worker in workers" ng-click="test()" href="#" class="list-group-item") {{worker.id}} {{worker.name}} {{worker.surname}}
+      div(class="list-group")
+        div(ng-repeat="worker in ctrl.workers")
+          a(ng-click="ctrl.get(worker.id)" href="#" class="list-group-item"  ng-class="{ active:ctrl.current_selected === worker.id }") {{worker.name}} {{worker.surname}}
 
 
 
