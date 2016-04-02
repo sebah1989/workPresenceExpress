@@ -18,11 +18,7 @@ html(ng-app="presenceApp")
             span(class="icon-bar")
           a(class="navbar-brand" href="#") Work presence
         div(id="navbar" class="collapse navbar-collapse")
-          ul(class="nav navbar-nav")
-            li
-              a(href="#" ng-if="ctrl.became_present") Became present today: {{ctrl.became_present}}
-            li
-              a(href="#" ng-if="ctrl.go_home_hour") Go home hour: {{ctrl.go_home_hour}}
+          ul(class="nav navbar-nav navbar-right")
             li
               a(href="#" ng-if="ctrl.work_time_left") Time in work left: {{ ctrl.work_time_left }}
 

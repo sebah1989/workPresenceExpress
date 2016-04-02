@@ -13,8 +13,8 @@ block content
           table(class="table")
             thead
               tr
-                th Become present
-                th Become absent
+                th Became present
+                th Became absent
                 th workday
             tbody
               tr(ng-repeat="presence in ctrl.presences | orderBy:'-workday'")
@@ -24,13 +24,19 @@ block content
         div(ng-if="ctrl.tab === 2" class="tab")
           table(class="table")
             tr
-              td Hours which should be worked till now:
+              td Became present today:
+              td {{ ctrl.became_present }}
+            tr
+              td Go home hour:
+              td {{ ctrl.go_home_hour }}
+            tr
+              td Hours which should be worked till now (this month):
               td {{ ctrl.month_work_time_left.should_be_worked }}
             tr
-              td Hours worked in this month:
+              td Hours worked (this month):
               td {{ ctrl.month_work_time_left.actualy_worked }}
             tr
-              td Missing hours worked in this month till now:
+              td Missing hours worked till now (this month):
               td {{ ctrl.month_work_time_left.missing_time_in_work }}
       h2(ng-if="ctrl.presences.length === 0") Click worker on the right to show his presences
     div(class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar")

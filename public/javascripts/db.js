@@ -73,7 +73,7 @@
 
     exports.getWorkerPresencesFromGivenMonth = function(month, worker_id) {
         return new Promise(function(fullfill, reject) {
-            connection.all("SELECT become_present, become_absent FROM presence WHERE strftime('%m', workday) = ? AND worker_id = ?", [month, worker_id], function(err, rows) {
+            connection.all("SELECT become_present, become_absent, workday FROM presence WHERE strftime('%m', workday) = ? AND worker_id = ?", [month, worker_id], function(err, rows) {
                 if (err) {
                     reject(err);
                 } else {

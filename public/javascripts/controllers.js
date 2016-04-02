@@ -5,7 +5,10 @@
     var testApp = angular.module("presenceApp", []),
         getTimeLeft = function($http, ctrl_obj, worker_id) {
             $http.get("/worker/" + worker_id + "/presences/work_time_left").success(function(response) {
-                ctrl_obj.work_time_left = response.time_in_work_left;
+                ctrl_obj.work_time_left = response.time_in_work_left || "Absent";
+            });
+            $http.get("/worker/" + worker_id + "/presences/month_work_time_left").success(function(response) {
+                ctrl_obj.month_work_time_left = response;
             });
         };
 
@@ -33,10 +36,6 @@
 
             $http.get("/worker/" + worker_id + "/presences/go_home_hour").success(function(response) {
                 workerc.go_home_hour = response.go_home_hour;
-            });
-
-            $http.get("/worker/" + worker_id + "/presences/month_work_time_left").success(function(response) {
-                workerc.month_work_time_left = response;
             });
 
             getTimeLeft($http, workerc, worker_id);
