@@ -89,9 +89,21 @@
             minutes = formatDateNumber(Math.floor((seconds % 3600) / 60));
             seconds = formatDateNumber(seconds % 60);
             return sign + hours + ":" + minutes + ":" + seconds;
+        },
+        calculateGoOutIncludingMonthBalance = function(should_be_worked, actualy_worked) {
+            var out_including_bilance = new Date(Date.now() + (should_be_worked * 1000 - actualy_worked * 1000)),
+                formated_date = formatDate(out_including_bilance),
+                formated_time = formatTimeFromDate(out_including_bilance);
+            if (formatDate(new Date()) !== formated_date) {
+                return formated_date + " " + formated_time;
+            }
+            return formated_time;
         };
 
     exports.calculateTodayWorkTimeLeft = function(presence) {
+        if (presence === undefined) {
+            return "";
+        }
         var current_time = new Date().toTimeString().split(" ")[0],
             presence_time,
             diff;
@@ -107,13 +119,14 @@
 
     exports.formatDate = formatDate;
 
-    exports.calcuteMonthTimeLeft = function(presences) {
+    exports.calculateMonthTimeLeft = function(presences) {
         var should_be_worked = getHoursTimeShouldBeWorked(),
             actualy_worked = sumUpTimeSpentInWorkInCurrentMonth(presences);
         return {
             should_be_worked: formatTime(should_be_worked),
             actualy_worked: formatTime(actualy_worked),
-            missing_time_in_work: formatTime(should_be_worked - actualy_worked)
+            missing_time_in_work: formatTime(should_be_worked - actualy_worked),
+            go_home_hour_including_month_balance: calculateGoOutIncludingMonthBalance(should_be_worked, actualy_worked)
         };
     };
 }());

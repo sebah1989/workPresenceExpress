@@ -51,7 +51,7 @@
 
     router.get('/month_work_time_left', function(req, res) {
         db.getWorkerPresencesFromGivenMonth(t_methods.getCurrentMonth(), req.params.worker_id).then(function(result) {
-            res.send(t_methods.calcuteMonthTimeLeft(result));
+            res.send(t_methods.calculateMonthTimeLeft(result));
         }).catch(
             function(error) {
                 console.log(error)

@@ -18,7 +18,7 @@ block content
                 th Difference
                 th Workday
             tbody
-              tr(ng-repeat="presence in ctrl.presences | orderBy:'-workday'")
+              tr(ng-repeat="presence in ctrl.presences | orderBy:'become_present -workday'")
                 td {{presence.become_present}}
                 td {{presence.become_absent}}
                 td {{presence.difference}}
@@ -40,6 +40,9 @@ block content
             tr
               td Missing hours worked till now (this month):
               td {{ ctrl.month_work_time_left.missing_time_in_work }}
+            tr
+              td Go home time including month balance:
+              td {{ ctrl.month_work_time_left.go_home_hour_including_month_balance }}
       h2(ng-if="ctrl.presences.length === 0") Click worker on the right to show his presences
     div(class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar")
       div(class="list-group")
