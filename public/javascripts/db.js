@@ -36,7 +36,9 @@
 
     exports.getWorkerPresences = function(worker_id) {
         return new Promise(function(fullfill, reject) {
-            connection.all("SELECT become_present, become_absent, workday, worker_id FROM presence WHERE worker_id = ?", [worker_id],
+            connection.all(
+                "SELECT become_present, become_absent, workday, worker_id, time(strftime('%s', become_absent) - strftime('%s', become_present), 'unixepoch')" + 
+                " as difference FROM presence WHERE worker_id = ?", [worker_id],
                 function (err, rows) {
                     if (err) {
                         reject(err);

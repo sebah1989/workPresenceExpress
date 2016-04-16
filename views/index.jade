@@ -15,11 +15,13 @@ block content
               tr
                 th Became present
                 th Became absent
-                th workday
+                th Difference
+                th Workday
             tbody
               tr(ng-repeat="presence in ctrl.presences | orderBy:'-workday'")
                 td {{presence.become_present}}
                 td {{presence.become_absent}}
+                td {{presence.difference}}
                 td {{presence.workday}}
         div(ng-if="ctrl.tab === 2" class="tab")
           table(class="table")
