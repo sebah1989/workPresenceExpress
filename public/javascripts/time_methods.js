@@ -91,13 +91,13 @@
             return sign + hours + ":" + minutes + ":" + seconds;
         },
         calculateGoOutIncludingMonthBalance = function(should_be_worked, actualy_worked) {
-            var out_including_bilance = new Date(Date.now() + (should_be_worked * 1000 - actualy_worked * 1000)),
-                formated_date = formatDate(out_including_bilance),
-                formated_time = formatTimeFromDate(out_including_bilance);
-            if (formatDate(new Date()) !== formated_date) {
-                return formated_date + " " + formated_time;
+            var out_including_balance = new Date(Date.now() + (should_be_worked * 1000 - actualy_worked * 1000)),
+                formatted_date = formatDate(out_including_balance),
+                formatted_time = formatTimeFromDate(out_including_balance);
+            if (formatDate(new Date()) !== formatted_date) {
+                return formatted_date + " " + formatted_time;
             }
-            return formated_time;
+            return formatted_time;
         };
 
     exports.calculateTodayWorkTimeLeft = function(presence) {
