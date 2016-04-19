@@ -18,7 +18,7 @@ block content
                 th Difference
                 th Workday
             tbody
-              tr(ng-repeat="presence in ctrl.presences | orderBy:'become_present -workday'")
+              tr(ng-repeat="presence in ctrl.presences | orderBy: ['-workday', '-become_present']")
                 td {{presence.become_present}}
                 td {{presence.become_absent}}
                 td {{presence.difference}}
