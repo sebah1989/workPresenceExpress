@@ -26,6 +26,9 @@
             month = month < 10 ? "0" + month : month;
             return date_object.getFullYear() + "-" + month + "-" + day;
         },
+        getCurrentMonth = function() {
+            return formatDateNumber(new Date().getMonth() + 1);
+        },
         getWorkedHoursFromModulo = function(first_day, modulo_days) {
             var sum = first_day + modulo_days;
             if (first_day !== 6 && first_day !== 0) {
@@ -98,35 +101,59 @@
                 return formatted_date + " " + formatted_time;
             }
             return formatted_time;
+        },
+        calculateTimeShouldBeSubstractedThisMonth = function(daysoff) {
+            var i, length = daysoff.length, month, current_month = getCurrentMonth(), time_to_substract = 0;
+            for (i = 0; i < length; i += 1) {
+                month = daysoff[i].workday.split("-")[1];
+                if (month === current_month) {
+                    time_to_substract += 28800;
+                }
+            }
+            return time_to_substract;
         };
 
-    exports.calculateTodayWorkTimeLeft = function(presence) {
-        if (presence === undefined) {
-            return "";
-        }
+    exports.calculateTodayWorkTimeLeft = function(presences) {
         var current_time = new Date().toTimeString().split(" ")[0],
             presence_time,
+            presence,
             diff;
+        if (presences === undefined) {
+            return "";
+        }
+        if (presences.length === 1) {
+            presence = presences[0];
+        }
         current_time = parseDateToSeconds(current_time);
         presence_time = parseDateToSeconds(presence.become_present);
         diff = 8 * 3600 - (current_time - presence_time);
         return formatTime(diff);
     };
 
-    exports.getCurrentMonth = function() {
-        return formatDateNumber(new Date().getMonth() + 1);
-    };
+    exports.getCurrentMonth = getCurrentMonth;
 
     exports.formatDate = formatDate;
 
-    exports.calculateMonthTimeLeft = function(presences) {
-        var should_be_worked = getHoursTimeShouldBeWorked(),
-            actualy_worked = sumUpTimeSpentInWorkInCurrentMonth(presences);
+    exports.calculateMonthTimeLeft = function(presences, daysoff) {
+        var actualy_worked = sumUpTimeSpentInWorkInCurrentMonth(presences),
+            days_off = calculateTimeShouldBeSubstractedThisMonth(daysoff),
+            should_be_worked = getHoursTimeShouldBeWorked() - days_off;
         return {
             should_be_worked: formatTime(should_be_worked),
             actualy_worked: formatTime(actualy_worked),
             missing_time_in_work: formatTime(should_be_worked - actualy_worked),
+            days_off: daysoff,
             go_home_hour_including_month_balance: calculateGoOutIncludingMonthBalance(should_be_worked, actualy_worked)
         };
+    };
+
+    exports.checkIfWeekday = function(date) {
+        var splited_date = date.split("-"),
+            created_date;
+        if (splited_date.length !== 3) {
+            return false;
+        }
+        created_date = new Date(splited_date[2], splited_date[1] - 1, splited_date[0]);
+        return [0, 6].indexOf(created_date.getDay()) === -1;
     };
 }());

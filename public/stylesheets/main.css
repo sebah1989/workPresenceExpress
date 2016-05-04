@@ -65,6 +65,17 @@ footer {
 .tab-nav {
   margin-left: 30%;
 }
+
+.calendar-input {
+  width: 200px;
+  display: inline;
+  margin-left: 20px;
+  margin-right: 5px;
+}
+
+#calendar-submit {
+  margin-left: 5px;
+}
 .tab-nav a:hover {
   cursor: pointer;
 };

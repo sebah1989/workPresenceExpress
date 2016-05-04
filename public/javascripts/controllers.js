@@ -1,4 +1,4 @@
-/*globals angular */
+/*globals angular, $, alert*/
 /*jslint unparam: true, node: true */
 (function() {
     "use strict";
@@ -9,6 +9,38 @@
             });
             $http.get("/worker/" + worker_id + "/presences/month_work_time_left").success(function(response) {
                 ctrl_obj.month_work_time_left = response;
+            });
+        },
+        updateDaysOff = function(worker_id, $http, workerc) {
+            $http.get("/worker/" + worker_id + "/presences/get_worker_days_off").success(function(response) {
+                workerc.days_off = response;
+            });
+        },
+        addWorkerDayOff = function(worker_id, day, $http, workerc) {
+            if (day === "") {
+                alert("You have to select date!");
+            } else {
+                $.ajax({
+                    url: "presences/add_worker_day_off",
+                    method: "POST",
+                    data: {
+                        date: day,
+                        worker_id: worker_id
+                    }
+                }).done(function(response) {
+                    updateDaysOff(worker_id, $http, workerc);
+                });
+            }
+        },
+        deleteWorkerDayOff = function(day_off_id, worker_id, $http, workerc) {
+            $.ajax({
+                url: "presences/delete_worker_day_off",
+                method: "POST",
+                data: {
+                    dayoff_id: day_off_id
+                }
+            }).done(function() {
+                updateDaysOff(worker_id, $http, workerc);
             });
         };
 
@@ -38,11 +70,23 @@
                 workerc.go_home_hour = response.go_home_hour;
             });
 
+            updateDaysOff(worker_id, $http, this);
+
             getTimeLeft($http, workerc, worker_id);
+
+            $scope.myDate = new Date();
 
             workerc.interval = $interval(function() {
                 getTimeLeft($http, workerc, worker_id);
             }, 1000);
+        };
+
+        workerc.addDayOff = function() {
+            addWorkerDayOff(this.current_selected, $(".calendar-input").val(), $http, this);
+        };
+
+        workerc.deleteDayOff = function(dayoff_id) {
+            deleteWorkerDayOff(dayoff_id, this.current_selected, $http, this);
         };
     });
 }());

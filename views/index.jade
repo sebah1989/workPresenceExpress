@@ -9,7 +9,9 @@ block content
             a(ng-click="ctrl.tab = 1") Presences
           li(ng-class="{active:ctrl.tab === 2}")
             a(ng-click="ctrl.tab = 2") Presences details
-        div(ng-if="ctrl.tab === 1" class="tab")
+          li(ng-class="{active:ctrl.tab === 3}")
+            a(ng-click="ctrl.tab = 3; ctrl.init_calendar()") Days off
+        div(ng-show="ctrl.tab === 1" class="tab")
           table(class="table")
             thead
               tr
@@ -23,7 +25,7 @@ block content
                 td {{presence.become_absent}}
                 td {{presence.difference}}
                 td {{presence.workday}}
-        div(ng-if="ctrl.tab === 2" class="tab")
+        div(ng-show="ctrl.tab === 2" class="tab")
           table(class="table")
             tr
               td Became present today:
@@ -43,6 +45,30 @@ block content
             tr
               td Go home time including month balance:
               td {{ ctrl.month_work_time_left.go_home_hour_including_month_balance }}
+        div(ng-show="ctrl.tab === 3" class="tab")
+          div(class="form-group input-append date text-center" id="date")
+            label(for="calendar") Select day off:
+            input(class="form-control calendar-input" readonly)
+            button(type="button" class="add-on btn btn-default")
+              span(class="glyphicon glyphicon-calendar")
+            button(class="btn btn-default" id="calendar-submit" ng-click="ctrl.addDayOff()") Add
+
+          table(class="table" ng-if="ctrl.days_off.length > 0")
+            thead
+              tr
+                th
+                th
+                th
+                th Date
+                th Action
+            tbody
+              tr(ng-repeat="dayoff in ctrl.days_off | orderBy: ['-workday']")
+                td
+                td
+                td
+                td {{ dayoff.workday }}
+                td 
+                  button(class="btn btn-default" ng-click="ctrl.deleteDayOff(dayoff.id)") Delete
       h2(ng-if="ctrl.presences.length === 0") Click worker on the right to show his presences
     div(class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar")
       div(class="list-group")

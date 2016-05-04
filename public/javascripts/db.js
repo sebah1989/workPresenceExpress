@@ -37,9 +37,9 @@
     exports.getWorkerPresences = function(worker_id) {
         return new Promise(function(fullfill, reject) {
             connection.all(
-                "SELECT become_present, become_absent, workday, worker_id, time(strftime('%s', become_absent) - strftime('%s', become_present), 'unixepoch')" + 
+                "SELECT become_present, become_absent, workday, worker_id, time(strftime('%s', become_absent) - strftime('%s', become_present), 'unixepoch')" +
                 " as difference FROM presence WHERE worker_id = ?", [worker_id],
-                function (err, rows) {
+                function(err, rows) {
                     if (err) {
                         reject(err);
                     } else {
@@ -63,7 +63,7 @@
 
     exports.getWorkerBecamePresent = function(worker_id) {
         return new Promise(function(fullfill, reject) {
-            connection.get("SELECT become_present FROM presence WHERE workday = date('now') AND worker_id = ?", [worker_id], function(err, rows) {
+            connection.all("SELECT become_present, become_absent FROM presence WHERE workday = date('now') AND worker_id = ?", [worker_id], function(err, rows) {
                 if (err) {
                     reject(err);
                 } else {
@@ -80,6 +80,42 @@
                     reject(err);
                 } else {
                     fullfill(rows);
+                }
+            });
+        });
+    };
+
+    exports.addWorkerDayOff = function(date, worker_id) {
+        return new Promise(function(fullfill, reject) {
+            connection.run("INSERT INTO dayoff(workday, worker_id) VALUES (?, ?)", [date, worker_id], function(err) {
+                if (err) {
+                    reject(err);
+                } else {
+                    fullfill("OK");
+                }
+            });
+        });
+    };
+
+    exports.getWorkerDaysOff = function(worker_id) {
+        return new Promise(function(fullfill, reject) {
+            connection.all("SELECT id, workday FROM dayoff WHERE worker_id = ?", worker_id, function(err, rows) {
+                if (err) {
+                    reject(err);
+                } else {
+                    fullfill(rows);
+                }
+            });
+        });
+    };
+
+    exports.deleteWorkerDayOff = function(dayoff_id) {
+        return new Promise(function(fullfill, reject) {
+            connection.run("DELETE FROM dayoff WHERE id = ?", dayoff_id, function(err) {
+                if (err) {
+                    reject(err);
+                } else {
+                    fullfill("OK");
                 }
             });
         });

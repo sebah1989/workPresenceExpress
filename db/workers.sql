@@ -11,7 +11,14 @@ CREATE TABLE 'presence' (
 	'become_absent' TIME,
 	'workday' DATE DEFAULT CURRENT_DATE,
 	'worker_id' INTEGER NOT NULL,
-	FOREIGN KEY('worker_id') REFERENCES 'people'('id')
+	FOREIGN KEY('worker_id') REFERENCES 'workers'('id')
+);
+
+CREATE TABLE 'dayoff' (
+	'id' INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+	'workday' DATE NOT NULL,
+	'worker_id' INTEGER NOT NULL,
+	FOREIGN KEY('worker_id') REFERENCES 'workers'('id')
 );
 
 
