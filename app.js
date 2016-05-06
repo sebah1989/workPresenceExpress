@@ -8,7 +8,6 @@ var express = require('express'),
   workers = require('./routes/workers'),
   presences = require('./routes/presences'),
   app = express();
-
 presence.check();
 
 // view engine setup

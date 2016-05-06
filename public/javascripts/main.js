@@ -4,7 +4,8 @@
     "use strict";
     $(document).on("ready", function() {
         $("#date").datepicker({
-            format: 'dd-mm-yyyy'
+            format: 'dd-mm-yyyy',
+            weekStart: 1
         });
     });
 }());
